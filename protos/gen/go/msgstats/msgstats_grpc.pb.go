@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MsgStatsService_GetStats_FullMethodName = "/msgstats.MsgStatsService/GetStats"
+	MsgStatsService_GetMsgStats_FullMethodName = "/msgstats.MsgStatsService/GetMsgStats"
 )
 
 // MsgStatsServiceClient is the client API for MsgStatsService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgStatsServiceClient interface {
-	GetStats(ctx context.Context, in *MsgStatsRequest, opts ...grpc.CallOption) (*MsgStatsResponse, error)
+	GetMsgStats(ctx context.Context, in *MsgStatsRequest, opts ...grpc.CallOption) (*MsgStatsResponse, error)
 }
 
 type msgStatsServiceClient struct {
@@ -37,10 +37,10 @@ func NewMsgStatsServiceClient(cc grpc.ClientConnInterface) MsgStatsServiceClient
 	return &msgStatsServiceClient{cc}
 }
 
-func (c *msgStatsServiceClient) GetStats(ctx context.Context, in *MsgStatsRequest, opts ...grpc.CallOption) (*MsgStatsResponse, error) {
+func (c *msgStatsServiceClient) GetMsgStats(ctx context.Context, in *MsgStatsRequest, opts ...grpc.CallOption) (*MsgStatsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(MsgStatsResponse)
-	err := c.cc.Invoke(ctx, MsgStatsService_GetStats_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MsgStatsService_GetMsgStats_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *msgStatsServiceClient) GetStats(ctx context.Context, in *MsgStatsReques
 // All implementations must embed UnimplementedMsgStatsServiceServer
 // for forward compatibility.
 type MsgStatsServiceServer interface {
-	GetStats(context.Context, *MsgStatsRequest) (*MsgStatsResponse, error)
+	GetMsgStats(context.Context, *MsgStatsRequest) (*MsgStatsResponse, error)
 	mustEmbedUnimplementedMsgStatsServiceServer()
 }
 
@@ -62,8 +62,8 @@ type MsgStatsServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedMsgStatsServiceServer struct{}
 
-func (UnimplementedMsgStatsServiceServer) GetStats(context.Context, *MsgStatsRequest) (*MsgStatsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetStats not implemented")
+func (UnimplementedMsgStatsServiceServer) GetMsgStats(context.Context, *MsgStatsRequest) (*MsgStatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMsgStats not implemented")
 }
 func (UnimplementedMsgStatsServiceServer) mustEmbedUnimplementedMsgStatsServiceServer() {}
 func (UnimplementedMsgStatsServiceServer) testEmbeddedByValue()                         {}
@@ -86,20 +86,20 @@ func RegisterMsgStatsServiceServer(s grpc.ServiceRegistrar, srv MsgStatsServiceS
 	s.RegisterService(&MsgStatsService_ServiceDesc, srv)
 }
 
-func _MsgStatsService_GetStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MsgStatsService_GetMsgStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgStatsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgStatsServiceServer).GetStats(ctx, in)
+		return srv.(MsgStatsServiceServer).GetMsgStats(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MsgStatsService_GetStats_FullMethodName,
+		FullMethod: MsgStatsService_GetMsgStats_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgStatsServiceServer).GetStats(ctx, req.(*MsgStatsRequest))
+		return srv.(MsgStatsServiceServer).GetMsgStats(ctx, req.(*MsgStatsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -112,8 +112,8 @@ var MsgStatsService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgStatsServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetStats",
-			Handler:    _MsgStatsService_GetStats_Handler,
+			MethodName: "GetMsgStats",
+			Handler:    _MsgStatsService_GetMsgStats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
