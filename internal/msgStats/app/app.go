@@ -4,23 +4,19 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hyphypnotic/messagio-tk/internal/config"
+	"github.com/hyphypnotic/messagio-tk/internal/msgStats/app/grpc"
 	"github.com/hyphypnotic/messagio-tk/internal/msgStats/services"
-	"github.com/hyphypnotic/messagio-tk/internal/msgStats/transport/grpc"
 	"go.uber.org/zap"
-	"os"
-	"os/signal"
-	"sync"
-	"syscall"
 )
 
 type Application struct {
-	Config   *config.Config
-	Logger   *zap.Logger
-	Postgres *sql.DB
-	Server   *grpc.Server
+	Config     *config.Config
+	Logger     *zap.Logger
+	Postgres   *sql.DB
+	GRPCServer *grpcapp.Server
 }
 
-func New(cfg *config.Config, messageService services.MessageService) (*Application, error) {
+func New(cfg *config.Config, msgStatsService services.MsgStats) (*Application, error) {
 	// Initialize the logger
 	logger, err := zap.NewProduction()
 	if err != nil {
@@ -41,42 +37,18 @@ func New(cfg *config.Config, messageService services.MessageService) (*Applicati
 	}
 
 	// Initialize the gRPC server
-	server, err := grpc.NewServer(cfg.GRPC.Address, messageService)
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize gRPC server: %w", err)
-	}
+	server := grpcapp.New(logger, cfg, msgStatsService)
 
 	// Create and return the Application instance
 	return &Application{
-		Config:   cfg,
-		Logger:   logger,
-		Postgres: db,
-		Server:   server,
+		Config:     cfg,
+		Logger:     logger,
+		Postgres:   db,
+		GRPCServer: server,
 	}, nil
 }
 
 func (app *Application) Run() error {
-	// Start the gRPC server in a separate goroutine
-	shutdownCh := make(chan os.Signal, 1)
-	signal.Notify(shutdownCh, syscall.SIGINT, syscall.SIGTERM)
-
-	var wg sync.WaitGroup
-	wg.Add(1)
-
-	go func() {
-		defer wg.Done()
-		if err := app.Server.Start(); err != nil {
-			app.Logger.Error("gRPC server stopped", zap.Error(err))
-		}
-	}()
-
-	sig := <-shutdownCh
-	app.Logger.Info("Received shutdown signal", zap.String("signal", sig.String()))
-
-	app.Server.Stop()
-	app.Logger.Info("gRPC server gracefully stopped")
-
-	wg.Wait()
-
+	app.GRPCServer.MustRun()
 	return nil
 }

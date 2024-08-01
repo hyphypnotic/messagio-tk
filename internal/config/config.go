@@ -25,8 +25,8 @@ type Config struct {
 		} `yaml:"consumer"`
 	} `yaml:"kafka"`
 	GRPC struct {
-		Address string `yaml:"address"`
-		Timeout int    `yaml:"timeout"`
+		Port    int `yaml:"port"`
+		Timeout int `yaml:"timeout"`
 	} `yaml:"grpc"`
 	HttpAddress string `yaml:"http_address"`
 }

@@ -10,7 +10,6 @@ import (
 )
 
 type MsgStats interface {
-	CreateMessage(message *entity.Message) error
 	GetMsgStats(startTime, endTime time.Time) (msgStats entity.MsgStats, err error)
 }
 
@@ -21,20 +20,6 @@ type msgStats struct {
 
 func NewMessageService(repo repositories.MessageRepo) MsgStats {
 	return &msgStats{repo: repo}
-}
-
-func (s *msgStats) CreateMessage(message *entity.Message) error {
-	if message == nil {
-		return fmt.Errorf("message cannot be nil")
-	}
-	if message.Body == "" {
-		return fmt.Errorf("message body cannot be empty")
-	}
-	if message.Status != "success" && message.Status != "error" {
-		return fmt.Errorf("invalid message status: %s", message.Status)
-	}
-
-	return s.repo.CreateMessage(message)
 }
 
 // GetMsgStats retrieves message statistics for the specified time range.
