@@ -1,0 +1,23 @@
+env: "local"
+
+postgres:
+  port: 5432
+  host: "localhost"
+  user: "messagio"
+  password: 1234
+  dbname: "messagio-tk"
+
+grpc:
+  port: 44044
+  timeout: 5s
+
+kafka:
+  brokers:
+    - "localhost:9092"
+  group: "message_group"
+  topic: "message"
+  consumer:
+    rebalance_strategy: "round_robin"
+    offset_initial: "oldest"
+
+http_address: "localhost:8082"

@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "gen/go/msgstats;msgstats";
 
-service MsgStatsService {
+service MsgStats {
   rpc GetMsgStats (MsgStatsRequest) returns (MsgStatsResponse);
 }
 
