@@ -22,7 +22,7 @@ const (
 	MsgStats_GetMsgStats_FullMethodName = "/msgstats.MsgStats/GetMsgStats"
 )
 
-// MsgStatsClient is the client API for MsgStats service.
+// MsgStatsClient is the client API for MsgStats services.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgStatsClient interface {
@@ -47,7 +47,7 @@ func (c *msgStatsClient) GetMsgStats(ctx context.Context, in *MsgStatsRequest, o
 	return out, nil
 }
 
-// MsgStatsServer is the server API for MsgStats service.
+// MsgStatsServer is the server API for MsgStats services.
 // All implementations must embed UnimplementedMsgStatsServer
 // for forward compatibility.
 type MsgStatsServer interface {
@@ -68,7 +68,7 @@ func (UnimplementedMsgStatsServer) GetMsgStats(context.Context, *MsgStatsRequest
 func (UnimplementedMsgStatsServer) mustEmbedUnimplementedMsgStatsServer() {}
 func (UnimplementedMsgStatsServer) testEmbeddedByValue()                  {}
 
-// UnsafeMsgStatsServer may be embedded to opt out of forward compatibility for this service.
+// UnsafeMsgStatsServer may be embedded to opt out of forward compatibility for this services.
 // Use of this interface is not recommended, as added methods to MsgStatsServer will
 // result in compilation errors.
 type UnsafeMsgStatsServer interface {
@@ -104,7 +104,7 @@ func _MsgStats_GetMsgStats_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-// MsgStats_ServiceDesc is the grpc.ServiceDesc for MsgStats service.
+// MsgStats_ServiceDesc is the grpc.ServiceDesc for MsgStats services.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var MsgStats_ServiceDesc = grpc.ServiceDesc{

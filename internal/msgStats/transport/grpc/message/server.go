@@ -23,7 +23,7 @@ func (s *serverAPI) GetStats(ctx context.Context, req *pb.MsgStatsRequest) (*pb.
 	startTime := req.GetStartTime().AsTime()
 	endTime := req.GetEndTime().AsTime()
 
-	// Delegate to the service layer
+	// Delegate to the services layer
 	msgStats, err := s.service.GetMsgStats(startTime, endTime)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get message statistics: %v", err)

@@ -34,7 +34,7 @@ func New(logger *zap.Logger, cfg *config.Config, msgStatsService services.MsgSta
 
 	grpcServer := grpc.NewServer(serverOptions...)
 
-	// Register msgStats service
+	// Register msgStats services
 	msgstatsgrpc.Register(grpcServer, msgStatsService)
 
 	// Enable reflection for gRPC (optional, useful for debugging and tooling)
