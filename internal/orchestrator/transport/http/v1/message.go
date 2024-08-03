@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/IBM/sarama"
 	"github.com/hyphypnotic/messagio-tk/internal/config"
 	"github.com/hyphypnotic/messagio-tk/internal/orchestrator/entity"
 	"github.com/hyphypnotic/messagio-tk/internal/orchestrator/services"
@@ -16,10 +17,11 @@ import (
 )
 
 type messageRoutes struct {
-	config   *config.Config
-	service  services.MessageService
-	grpcConn *grpc.ClientConn
-	logger   *zap.Logger
+	config        *config.Config
+	service       services.MessageService
+	grpcConn      *grpc.ClientConn
+	logger        *zap.Logger
+	kafkaProducer sarama.SyncProducer
 }
 
 type MessageController interface {
@@ -27,12 +29,13 @@ type MessageController interface {
 	GetMsgStats(c echo.Context) error
 }
 
-func NewMessageRoutes(e *echo.Group, config *config.Config, service services.MessageService, grpcConn *grpc.ClientConn, logger *zap.Logger) {
+func NewMessageRoutes(e *echo.Group, config *config.Config, service services.MessageService, grpcConn *grpc.ClientConn, logger *zap.Logger, kafkaProducer sarama.SyncProducer) {
 	r := &messageRoutes{
-		config:   config,
-		service:  service,
-		grpcConn: grpcConn,
-		logger:   logger,
+		config:        config,
+		service:       service,
+		grpcConn:      grpcConn,
+		logger:        logger,
+		kafkaProducer: kafkaProducer,
 	}
 
 	g := e.Group("/messages")
@@ -57,6 +60,17 @@ func (r *messageRoutes) Create(c echo.Context) error {
 	}
 
 	r.logger.Info("Message created successfully", zap.Uint("messageID", newMessage.ID))
+
+	kafkaMessage := &sarama.ProducerMessage{
+		Topic: "handle",
+		Value: sarama.StringEncoder(newMessage.Body), // Assuming Content is the message body
+	}
+	_, _, err = r.kafkaProducer.SendMessage(kafkaMessage)
+	if err != nil {
+		r.logger.Error("Failed to send message to Kafka", zap.Error(err))
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to send message to Kafka").SetInternal(err)
+	}
+
 	return c.JSON(http.StatusCreated, newMessage)
 }
 

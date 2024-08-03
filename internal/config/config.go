@@ -16,10 +16,10 @@ type Config struct {
 		DBName   string `yaml:"dbname"`
 	} `yaml:"database"`
 	Kafka struct {
-		Brokers []string `yaml:"brokers"`
-		Group   string   `yaml:"group"`
-		Topic   string   `yaml:"topic"`
+		Brokers []string            `yaml:"brokers"`
+		Topics  map[string][]string `yaml:"topics"`
 	} `yaml:"kafka"`
+
 	GRPC struct {
 		Port    int    `yaml:"port"`
 		Timeout int    `yaml:"timeout"`

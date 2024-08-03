@@ -9,8 +9,9 @@ database:
 
 kafka:
   brokers:
-    - "broker1:9092"
-    - "broker2:9092"
+    - "localhost:9092"
+  topics:
+    message_group: "handle"
 
 grpc:
   host: "localhost"
