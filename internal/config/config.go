@@ -26,7 +26,7 @@ type Config struct {
 		Host    string `yaml:"host"`
 	} `yaml:"grpc"`
 
-	HttpPort int `yaml:"http_address"`
+	HttpPort int `yaml:"http_port"`
 }
 
 // Load loads config from a .yaml file

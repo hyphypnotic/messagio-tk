@@ -7,6 +7,7 @@ import (
 	"github.com/hyphypnotic/messagio-tk/internal/msgStats/app/grpc"
 	"github.com/hyphypnotic/messagio-tk/internal/msgStats/repositories"
 	"github.com/hyphypnotic/messagio-tk/internal/msgStats/services"
+	_ "github.com/lib/pq"
 	"go.uber.org/zap"
 )
 

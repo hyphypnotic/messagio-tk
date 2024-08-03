@@ -3,6 +3,7 @@ package app
 import (
 	"database/sql"
 	"fmt"
+	"github.com/IBM/sarama"
 	"github.com/hyphypnotic/messagio-tk/internal/orchestrator/repositories"
 
 	"github.com/hyphypnotic/messagio-tk/internal/config"
@@ -16,11 +17,12 @@ import (
 
 // Application contains the application components
 type Application struct {
-	Config   *config.Config
-	Logger   *zap.Logger
-	Postgres *sql.DB
-	GRPCConn *grpc.ClientConn
-	Echo     *echo.Echo
+	Config        *config.Config
+	Logger        *zap.Logger
+	Postgres      *sql.DB
+	GRPCConn      *grpc.ClientConn
+	Echo          *echo.Echo
+	KafkaProducer sarama.SyncProducer
 }
 
 // New creates a new Application instance
@@ -47,7 +49,7 @@ func New(cfg *config.Config) (*Application, error) {
 	// Initialize gRPC connection (assuming it's created elsewhere)
 	grpcAddress := fmt.Sprintf("%s:%d", cfg.GRPC.Host, cfg.GRPC.Port)
 
-	grpcConn, err := grpc.Dial(grpcAddress)
+	grpcConn, err := grpc.NewClient(grpcAddress, grpc.WithInsecure())
 	if err != nil {
 		logger.Error("Failed to connect to gRPC server", zap.Error(err))
 		return nil, fmt.Errorf("failed to connect to gRPC server: %w", err)
@@ -55,13 +57,18 @@ func New(cfg *config.Config) (*Application, error) {
 
 	// Initialize Echo
 	e := echo.New()
+	kafkaProducer, err := sarama.NewSyncProducer(cfg.Kafka.Brokers, nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return &Application{
-		Config:   cfg,
-		Logger:   logger,
-		Postgres: db,
-		GRPCConn: grpcConn,
-		Echo:     e,
+		Config:        cfg,
+		Logger:        logger,
+		Postgres:      db,
+		GRPCConn:      grpcConn,
+		Echo:          e,
+		KafkaProducer: kafkaProducer,
 	}, nil
 }
 
@@ -69,7 +76,7 @@ func New(cfg *config.Config) (*Application, error) {
 func (app *Application) Run() error {
 	// Initialize routes
 	msgRepo := repositories.NewMessageRepo(app.Postgres)
-	v1.NewRouter(app.Echo, app.Config, app.Logger, app.GRPCConn, services.NewMessageService(msgRepo))
+	v1.NewRouter(app.Echo, app.Config, app.Logger, app.GRPCConn, services.NewMessageService(msgRepo), app.KafkaProducer)
 
 	// Start the server
 	return app.Echo.Start(fmt.Sprintf(":%d", app.Config.HttpPort))

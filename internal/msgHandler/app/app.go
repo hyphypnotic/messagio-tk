@@ -23,7 +23,7 @@ type Application struct {
 	MessageConsumer *kafka.MessageConsumer
 }
 
-func NewApplication(cfg *config.Config) (*Application, error) {
+func New(cfg *config.Config) (*Application, error) {
 	logger, err := zap.NewProduction()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create logger: %w", err)

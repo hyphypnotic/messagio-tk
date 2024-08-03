@@ -3,6 +3,7 @@ package grpcapp
 import (
 	"context"
 	"fmt"
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"net"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
@@ -25,11 +26,20 @@ type Server struct {
 func New(logger *zap.Logger, config *config.Config, msgStatsService services.MsgStats) *Server {
 	grpcLogger := InterceptorLogger(logger)
 
+	// Chain interceptors
+	unaryInterceptors := []grpc.UnaryServerInterceptor{
+		recovery.UnaryServerInterceptor(),
+		logging.UnaryServerInterceptor(grpcLogger),
+	}
+
+	streamInterceptors := []grpc.StreamServerInterceptor{
+		recovery.StreamServerInterceptor(),
+		logging.StreamServerInterceptor(grpcLogger),
+	}
+
 	serverOptions := []grpc.ServerOption{
-		grpc.UnaryInterceptor(logging.UnaryServerInterceptor(grpcLogger)),
-		grpc.StreamInterceptor(logging.StreamServerInterceptor(grpcLogger)),
-		grpc.UnaryInterceptor(recovery.UnaryServerInterceptor()),
-		grpc.StreamInterceptor(recovery.StreamServerInterceptor()),
+		grpc.UnaryInterceptor(grpcMiddleware.ChainUnaryServer(unaryInterceptors...)),
+		grpc.StreamInterceptor(grpcMiddleware.ChainStreamServer(streamInterceptors...)),
 	}
 
 	grpcServer := grpc.NewServer(serverOptions...)

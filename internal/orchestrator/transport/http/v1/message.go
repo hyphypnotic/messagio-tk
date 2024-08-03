@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -61,9 +62,15 @@ func (r *messageRoutes) Create(c echo.Context) error {
 
 	r.logger.Info("Message created successfully", zap.Uint("messageID", newMessage.ID))
 
+	jsonMessage, err := json.Marshal(newMessage)
+	if err != nil {
+		r.logger.Error("Failed to marshal new message", zap.Error(err))
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to marshal new message").SetInternal(err)
+	}
+
 	kafkaMessage := &sarama.ProducerMessage{
 		Topic: "handle",
-		Value: sarama.StringEncoder(newMessage.Body), // Assuming Content is the message body
+		Value: sarama.ByteEncoder(jsonMessage),
 	}
 	_, _, err = r.kafkaProducer.SendMessage(kafkaMessage)
 	if err != nil {

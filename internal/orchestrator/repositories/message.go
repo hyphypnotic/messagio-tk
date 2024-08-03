@@ -18,8 +18,8 @@ func NewMessageRepo(db *sql.DB) MessageRepo {
 }
 
 func (repo *messageRepo) Create(message *entity.Message) (*entity.Message, error) {
-	query := "INSERT INTO messages (body, status) VALUES ($1, $2) RETURNING id, created_at"
-	err := repo.DB.QueryRow(query, message.Body, message.Status).Scan(&message.ID, &message.CreatedAt)
+	query := "INSERT INTO messages (body) VALUES ($1) RETURNING id, created_at, status"
+	err := repo.DB.QueryRow(query, message.Body).Scan(&message.ID, &message.CreatedAt, &message.Status)
 	if err != nil {
 		return nil, err
 	}

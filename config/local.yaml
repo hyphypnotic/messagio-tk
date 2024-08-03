@@ -11,7 +11,7 @@ kafka:
   brokers:
     - "localhost:9092"
   topics:
-    message_group: "handle"
+    message_group: ["handle"]
 
 grpc:
   host: "localhost"
