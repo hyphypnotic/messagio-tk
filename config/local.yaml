@@ -1,23 +1,21 @@
 env: "local"
 
-postgres:
-  port: 5432
+database:
   host: "localhost"
+  port: 5432
   user: "messagio"
-  password: 1234
+  password: "1234"
   dbname: "messagio-tk"
-
-grpc:
-  port: 44044
-  timeout: 5s
 
 kafka:
   brokers:
-    - "localhost:9092"
-  group: "message_group"
-  topic: "message"
-  consumer:
-    rebalance_strategy: "round_robin"
-    offset_initial: "oldest"
+    - "broker1:9092"
+    - "broker2:9092"
 
-http_address: "localhost:8082"
+grpc:
+  host: "localhost"
+  port: 50051
+  timeout: 5  # in seconds
+
+http_port: 8082
+

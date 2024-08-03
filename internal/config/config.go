@@ -16,13 +16,9 @@ type Config struct {
 		DBName   string `yaml:"dbname"`
 	} `yaml:"database"`
 	Kafka struct {
-		Brokers  []string `yaml:"brokers"`
-		Group    string   `yaml:"group"`
-		Topic    string   `yaml:"topic"`
-		Consumer struct {
-			RebalanceStrategy string `yaml:"rebalance_strategy"`
-			OffsetInitial     string `yaml:"offset_initial"`
-		} `yaml:"consumer"`
+		Brokers []string `yaml:"brokers"`
+		Group   string   `yaml:"group"`
+		Topic   string   `yaml:"topic"`
 	} `yaml:"kafka"`
 	GRPC struct {
 		Port    int    `yaml:"port"`
@@ -33,8 +29,8 @@ type Config struct {
 	HttpPort int `yaml:"http_address"`
 }
 
-// MustLoad loads config from a .yaml file
-func MustLoad(filePath string) (*Config, error) {
+// Load loads config from a .yaml file
+func Load(filePath string) (*Config, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
