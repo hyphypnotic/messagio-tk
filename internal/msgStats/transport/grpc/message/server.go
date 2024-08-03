@@ -19,11 +19,10 @@ func Register(grpcServer *grpc.Server, service services.MsgStats) {
 }
 
 // GetStats retrieves message statistics for a given time range
-func (s *serverAPI) GetStats(ctx context.Context, req *pb.MsgStatsRequest) (*pb.MsgStatsResponse, error) {
+func (s *serverAPI) GetStats(ctx *context.Context, req *pb.MsgStatsRequest) (*pb.MsgStatsResponse, error) {
 	startTime := req.GetStartTime().AsTime()
 	endTime := req.GetEndTime().AsTime()
 
-	// Delegate to the services layer
 	msgStats, err := s.service.GetMsgStats(startTime, endTime)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get message statistics: %v", err)

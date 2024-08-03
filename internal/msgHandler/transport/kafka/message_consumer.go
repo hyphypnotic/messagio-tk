@@ -3,13 +3,12 @@ package kafka
 import (
 	"context"
 	"encoding/json"
+	"github.com/hyphypnotic/messagio-tk/internal/config"
 
 	"github.com/IBM/sarama"
 	"go.uber.org/zap"
 
-	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/app"
 	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/entity"
-	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/repositories"
 	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/services"
 )
 
@@ -19,23 +18,19 @@ type MessageConsumer struct {
 	Logger        *zap.Logger
 }
 
-func NewMessageConsumer(app *app.Application) *MessageConsumer {
-	config := sarama.NewConfig()
-	config.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategyRoundRobin()}
-	config.Consumer.Offsets.Initial = sarama.OffsetOldest
+func NewMessageConsumer(service services.MessageService, logger *zap.Logger, appConfig *config.Config) *MessageConsumer {
+	kafkaConfig := sarama.NewConfig()
+	kafkaConfig.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategyRoundRobin()}
+	kafkaConfig.Consumer.Offsets.Initial = sarama.OffsetOldest
 
-	consumerGroup, err := sarama.NewConsumerGroup(app.Config.Kafka.Brokers, "message", config)
+	consumerGroup, err := sarama.NewConsumerGroup(appConfig.Kafka.Brokers, "message", kafkaConfig)
 	if err != nil {
-		app.Logger.Fatal("Failed to start Sarama consumer group", zap.Error(err))
+		logger.Fatal("Failed to start Sarama consumer group", zap.Error(err))
 	}
-
-	messageRepo := repositories.NewMessageRepository(app.Postgres)
-	messageService := services.NewMessageService(messageRepo)
-
 	return &MessageConsumer{
 		ConsumerGroup: consumerGroup,
-		Service:       messageService,
-		Logger:        app.Logger,
+		Service:       service,
+		Logger:        logger,
 	}
 }
 

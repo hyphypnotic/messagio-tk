@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"github.com/hyphypnotic/messagio-tk/internal/msgStats/app"
 	"time"
 
 	"github.com/hyphypnotic/messagio-tk/internal/msgStats/entity"
@@ -14,11 +13,10 @@ type MsgStats interface {
 }
 
 type msgStats struct {
-	app  *app.Application
 	repo repositories.MessageRepo
 }
 
-func NewMessageService(repo repositories.MessageRepo) MsgStats {
+func NewMsgStatsService(repo repositories.MessageRepo) MsgStats {
 	return &msgStats{repo: repo}
 }
 

@@ -14,7 +14,7 @@ type messageRepository struct {
 	DB *sql.DB
 }
 
-func NewMessageRepository(db *sql.DB) MessageRepository {
+func NewMessageRepo(db *sql.DB) MessageRepository {
 	return &messageRepository{DB: db}
 }
 

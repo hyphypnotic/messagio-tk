@@ -25,10 +25,12 @@ type Config struct {
 		} `yaml:"consumer"`
 	} `yaml:"kafka"`
 	GRPC struct {
-		Port    int `yaml:"port"`
-		Timeout int `yaml:"timeout"`
+		Port    int    `yaml:"port"`
+		Timeout int    `yaml:"timeout"`
+		Host    string `yaml:"host"`
 	} `yaml:"grpc"`
-	HttpAddress string `yaml:"http_address"`
+
+	HttpPort int `yaml:"http_address"`
 }
 
 // MustLoad loads config from a .yaml file

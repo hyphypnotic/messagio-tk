@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/hyphypnotic/messagio-tk/internal/config"
 	"github.com/hyphypnotic/messagio-tk/internal/msgStats/app/grpc"
+	"github.com/hyphypnotic/messagio-tk/internal/msgStats/repositories"
 	"github.com/hyphypnotic/messagio-tk/internal/msgStats/services"
 	"go.uber.org/zap"
 )
@@ -16,7 +17,7 @@ type Application struct {
 	GRPCServer *grpcapp.Server
 }
 
-func New(cfg *config.Config, msgStatsService services.MsgStats) (*Application, error) {
+func New(cfg *config.Config) (*Application, error) {
 	// Initialize the logger
 	logger, err := zap.NewProduction()
 	if err != nil {
@@ -37,6 +38,8 @@ func New(cfg *config.Config, msgStatsService services.MsgStats) (*Application, e
 	}
 
 	// Initialize the gRPC server
+	messageRepo := repositories.NewMessageRepo(db)
+	msgStatsService := services.NewMsgStatsService(messageRepo)
 	server := grpcapp.New(logger, cfg, msgStatsService)
 
 	// Create and return the Application instance
@@ -49,6 +52,6 @@ func New(cfg *config.Config, msgStatsService services.MsgStats) (*Application, e
 }
 
 func (app *Application) Run() error {
-	app.GRPCServer.MustRun()
-	return nil
+	err := app.GRPCServer.Run()
+	return err
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	"github.com/hyphypnotic/messagio-tk/internal/config"
 	"github.com/hyphypnotic/messagio-tk/internal/msgStats/services"
-	msgstatsgrpc "github.com/hyphypnotic/messagio-tk/internal/msgStats/transport/grpc/message"
+	"github.com/hyphypnotic/messagio-tk/internal/msgStats/transport/grpc/message"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
@@ -22,7 +22,7 @@ type Server struct {
 	grpcServer *grpc.Server
 }
 
-func New(logger *zap.Logger, cfg *config.Config, msgStatsService services.MsgStats) *Server {
+func New(logger *zap.Logger, config *config.Config, msgStatsService services.MsgStats) *Server {
 	grpcLogger := InterceptorLogger(logger)
 
 	serverOptions := []grpc.ServerOption{
@@ -34,15 +34,14 @@ func New(logger *zap.Logger, cfg *config.Config, msgStatsService services.MsgSta
 
 	grpcServer := grpc.NewServer(serverOptions...)
 
-	// Register msgStats services
 	msgstatsgrpc.Register(grpcServer, msgStatsService)
 
-	// Enable reflection for gRPC (optional, useful for debugging and tooling)
+	// for debugging
 	reflection.Register(grpcServer)
 
 	return &Server{
 		logger:     logger,
-		config:     cfg,
+		config:     config,
 		grpcServer: grpcServer,
 	}
 }
