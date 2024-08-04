@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/hyphypnotic/messagio-tk/internal/config"
-	"github.com/hyphypnotic/messagio-tk/internal/msgStats/app"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_handler/app"
 )
 
 func main() {
@@ -11,10 +11,10 @@ func main() {
 		panic(err)
 	}
 
-	msgStats, err := app.New(cfg)
+	msgHandler, err := app.New(cfg)
 	if err != nil {
 		panic(err)
 	}
 
-	msgStats.Run()
+	msgHandler.Run()
 }

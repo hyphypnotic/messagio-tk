@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/IBM/sarama"
 	"github.com/hyphypnotic/messagio-tk/internal/config"
-	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/services"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_handler/services"
 	"go.uber.org/zap"
 )
 

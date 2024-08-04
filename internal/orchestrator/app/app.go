@@ -4,9 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/IBM/sarama"
-	"github.com/hyphypnotic/messagio-tk/internal/orchestrator/repositories"
-
 	"github.com/hyphypnotic/messagio-tk/internal/config"
+	"github.com/hyphypnotic/messagio-tk/internal/orchestrator/repositories"
 	"github.com/hyphypnotic/messagio-tk/internal/orchestrator/services"
 	"github.com/hyphypnotic/messagio-tk/internal/orchestrator/transport/http/v1"
 	"github.com/labstack/echo/v4"

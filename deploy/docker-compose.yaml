@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: messagio-tk
+      POSTGRES_USER: messagio
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  kafka:
+    image: bitnami/kafka:latest
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    ports:
+      - "2181:2181"
+
+  orchestrator:
+    build:
+      context: ./
+      dockerfile: orchestrator.Dockerfile
+    volumes:
+      - ./protos/gen:/app/protos/gen
+    depends_on:
+      - postgres
+      - kafka
+
+
+  msghandler:
+    build:
+      context: ./
+      dockerfile: msg_handler.Dockerfile
+    depends_on:
+      - postgres
+      - kafka
+
+  msgstats:
+    build:
+      context: ./
+      dockerfile: msg_stats.Dockerfile
+    volumes:
+      - ./protos/gen:/app/protos/gen
+    depends_on:
+      - postgres
+      - kafka
+
+
+volumes:
+  postgres_data:

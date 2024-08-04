@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/repositories"
-	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/services"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_handler/repositories"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_handler/services"
 	"log"
 
 	"github.com/IBM/sarama"
@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/hyphypnotic/messagio-tk/internal/config"
-	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/transport/kafka"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_handler/transport/kafka"
 )
 
 type Application struct {

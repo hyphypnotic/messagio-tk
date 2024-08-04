@@ -1,15 +1,16 @@
 package repositories
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"time"
 
-	"github.com/hyphypnotic/messagio-tk/internal/msgStats/entity"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_stats/entity"
 )
 
 type MessageRepo interface {
-	GetMsgStats(startTime, endTime time.Time) (entity.MsgStats, error)
+	GetMsgStats(ctx context.Context, startTime, endTime time.Time) (entity.MsgStats, error)
 }
 
 type messageRepo struct {
@@ -20,7 +21,7 @@ func NewMessageRepo(db *sql.DB) MessageRepo {
 	return &messageRepo{DB: db}
 }
 
-func (r *messageRepo) GetMsgStats(startTime, endTime time.Time) (entity.MsgStats, error) {
+func (r *messageRepo) GetMsgStats(ctx context.Context, startTime, endTime time.Time) (entity.MsgStats, error) {
 	var (
 		query        string
 		args         []interface{}
@@ -70,7 +71,7 @@ func (r *messageRepo) GetMsgStats(startTime, endTime time.Time) (entity.MsgStats
 		args = append(args, startTime, endTime)
 	}
 
-	err := r.DB.QueryRow(query, args...).Scan(&totalCount, &successCount, &errorCount)
+	err := r.DB.QueryRowContext(ctx, query, args...).Scan(&totalCount, &successCount, &errorCount)
 	if err != nil {
 		return entity.MsgStats{}, fmt.Errorf("failed to get message statistics: %w", err)
 	}

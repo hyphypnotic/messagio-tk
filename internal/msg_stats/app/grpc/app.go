@@ -4,17 +4,17 @@ import (
 	"context"
 	"fmt"
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	"google.golang.org/grpc/reflection"
 	"net"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	"github.com/hyphypnotic/messagio-tk/internal/config"
-	"github.com/hyphypnotic/messagio-tk/internal/msgStats/services"
-	"github.com/hyphypnotic/messagio-tk/internal/msgStats/transport/grpc/message"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_stats/services"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_stats/transport/grpc/message"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 type Server struct {
@@ -47,7 +47,9 @@ func New(logger *zap.Logger, config *config.Config, msgStatsService services.Msg
 	msgstatsgrpc.Register(grpcServer, msgStatsService)
 
 	// for debugging
-	reflection.Register(grpcServer)
+	if config.Env == "local" {
+		reflection.Register(grpcServer)
+	}
 
 	return &Server{
 		logger:     logger,

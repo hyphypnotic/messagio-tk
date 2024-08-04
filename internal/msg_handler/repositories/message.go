@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"database/sql"
-	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/entity"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_handler/entity"
 )
 
 type MessageRepository interface {

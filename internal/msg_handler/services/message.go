@@ -2,7 +2,7 @@ package services
 
 import (
 	"errors"
-	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/repositories"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_handler/repositories"
 )
 
 type messageService struct {

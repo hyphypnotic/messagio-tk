@@ -3,8 +3,8 @@ package kafka
 import (
 	"encoding/json"
 	"github.com/IBM/sarama"
-	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/entity"
-	"github.com/hyphypnotic/messagio-tk/internal/msgHandler/services"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_handler/entity"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_handler/services"
 	"go.uber.org/zap"
 )
 

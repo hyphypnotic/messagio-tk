@@ -7,14 +7,14 @@ import (
 
 // Config - configuration settings
 type Config struct {
-	Env      string `yaml:"env" env-default:"local"`
+	Env      string `yaml:"env"`
 	Postgres struct {
-		Host     string `yaml:"host" env-default:"localhost"`
-		Port     int    `yaml:"port" env-default:"5432"`
+		Host     string `yaml:"host"`
+		Port     int    `yaml:"port"`
 		User     string `yaml:"user"`
 		Password string `yaml:"password"`
 		DBName   string `yaml:"dbname"`
-	} `yaml:"database"`
+	} `yaml:"postgres"`
 	Kafka struct {
 		Brokers []string            `yaml:"brokers"`
 		Topics  map[string][]string `yaml:"topics"`

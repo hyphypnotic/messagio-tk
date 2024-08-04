@@ -2,7 +2,7 @@ package msgstatsgrpc
 
 import (
 	"context"
-	"github.com/hyphypnotic/messagio-tk/internal/msgStats/services"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_stats/services"
 	pb "github.com/hyphypnotic/messagio-tk/protos/gen/go/msgstats"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -18,12 +18,12 @@ func Register(grpcServer *grpc.Server, service services.MsgStats) {
 	pb.RegisterMsgStatsServer(grpcServer, &serverAPI{service: service})
 }
 
-// GetStats retrieves message statistics for a given time range
+// GetMsgStats retrieves message statistics for a given time range
 func (s *serverAPI) GetMsgStats(ctx context.Context, req *pb.MsgStatsRequest) (*pb.MsgStatsResponse, error) {
 	startTime := req.GetStartTime().AsTime()
 	endTime := req.GetEndTime().AsTime()
 
-	msgStats, err := s.service.GetMsgStats(startTime, endTime)
+	msgStats, err := s.service.GetMsgStats(ctx, startTime, endTime)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get message statistics: %v", err)
 	}

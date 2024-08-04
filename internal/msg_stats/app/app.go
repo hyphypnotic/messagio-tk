@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hyphypnotic/messagio-tk/internal/config"
-	"github.com/hyphypnotic/messagio-tk/internal/msgStats/app/grpc"
-	"github.com/hyphypnotic/messagio-tk/internal/msgStats/repositories"
-	"github.com/hyphypnotic/messagio-tk/internal/msgStats/services"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_stats/app/grpc"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_stats/repositories"
+	"github.com/hyphypnotic/messagio-tk/internal/msg_stats/services"
 	_ "github.com/lib/pq"
 	"go.uber.org/zap"
 )
